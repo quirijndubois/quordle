@@ -82,6 +82,7 @@ def identify(request):
     id = request.session.get('id')
     if not id:
         request.session['id'] = random.randint(1000, 9999)
+        id = request.session['id']
     ip_address = request.META.get('REMOTE_ADDR')
     mac_address = request.META.get('HTTP_X_FORWARDED_FOR', 'Unknown')
 
@@ -92,6 +93,8 @@ def identify(request):
     ).first() or Player.objects.filter(
         mac_address=mac_address
     ).first()
+    
+    print(id)
 
     if not player:
         player = Player.objects.create(
