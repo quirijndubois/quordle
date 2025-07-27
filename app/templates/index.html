@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+  {% csrf_token %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+</head>
+<body class="bg-black">
+<style>
+
+.game-container{
+    width: min(500px, 100%);
+}
+.game-row{
+    width: 100%;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.letter-card{
+    color: white;
+    width: calc(100% / {{ word_length }});
+    border: 1px solid rgb(59, 59, 59);
+    margin: 1%;
+    background-color: rgb(10, 10, 10);
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    overflow: hidden;
+    user-select: none;
+    font-size: min(calc(1500% / {{ word_length }}),10vw);
+}
+
+.keyboard-container{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    background-color: black;
+}
+.keyboard-row{
+    display: flex;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    height: 70px;
+}
+.keyboard-letter{
+    color: white;
+    border-radius: 5px;
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 100%;
+    overflow: hidden;
+    user-select: none;
+    margin: 3px;
+    width: calc(100vw / 10 - 6px) !important;
+}
+
+.keyboard-wide-letter{
+    width: calc(100vw / 10 * 1.5 - 6px) !important;
+}
+
+.wiggle {
+    animation: wiggle 0.3s ease-in-out forwards;
+}
+
+.grey-keyboard{
+    background-color: rgb(50, 50, 50);
+}
+
+.yellow-keyboard{
+    background-color: rgb(150, 155, 66);
+}
+
+.green-keyboard{
+    background-color: rgb(69, 138, 69);
+}
+
+@keyframes spin {
+    0% {
+      transform: rotateX(0deg);
+    }
+    100% {
+      transform: rotateX(180deg);
+    }
+}
+
+@keyframes green {
+    0% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(1);
+    }
+    50% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(0);
+    }
+
+  100% {
+    background-color: rgb(69, 138, 69);
+    transform: scaleY(1);
+    border: none;
+  }
+}
+
+@keyframes yellow {
+  0% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(1);
+  }
+  50% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(0);
+  }
+
+  100% {
+    background-color: rgb(150, 155, 66);
+    transform: scaleY(1);
+    border: none;
+  }
+}
+
+@keyframes grey {
+  0% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(1);
+  }
+  50% {
+    background-color: rgb(10, 10, 10);
+    transform: scaleY(0);
+  }
+
+  100% {
+    background-color: rgb(50, 50, 50);
+    transform: scaleY(1);
+    border: none;
+  }
+}
+
+@keyframes wiggle {
+    0% {
+        transform: translate(0, 0);
+    }
+    20% {
+        transform: translate(-5px, 0);
+    }
+    40% {
+        transform: translate(5px, 0);
+    }
+    60% {
+        transform: translate(-5px, 0);
+    }
+    80% {
+        transform: translate(5px, 0);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes light {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes flyIn {
+    from {
+        transform: translate(0, 60vh);
+    }
+    to{
+        transform: translate(0, 0);
+    }
+}
+
+</style>
+
+<h1 class="text-center text-white">Quordle</h1>
+
+<div class="container justify-content-center bg-black game-container">
+    {% for i in guess_amount_range %}
+    <div class="game-row">
+        {% for i in word_length_range %}
+        <div class="letter-card"></div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<div style="height: 300px;"></div>
+
+<div class="keyboard-container">
+    <div class="keyboard-row">
+        <div id="letter-q" class="keyboard-letter">Q</div>
+        <div id="letter-w" class="keyboard-letter">W</div>
+        <div id="letter-e" class="keyboard-letter">E</div>
+        <div id="letter-r" class="keyboard-letter">R</div>
+        <div id="letter-t" class="keyboard-letter">T</div>
+        <div id="letter-y" class="keyboard-letter">Y</div>
+        <div id="letter-u" class="keyboard-letter">U</div>
+        <div id="letter-i" class="keyboard-letter">I</div>
+        <div id="letter-o" class="keyboard-letter">O</div>
+        <div id="letter-p" class="keyboard-letter">P</div>
+    </div>
+    <div class="keyboard-row">
+        <div id="letter-a" class="keyboard-letter">A</div>
+        <div id="letter-s" class="keyboard-letter">S</div>
+        <div id="letter-d" class="keyboard-letter">D</div>
+        <div id="letter-f" class="keyboard-letter">F</div>
+        <div id="letter-g" class="keyboard-letter">G</div>
+        <div id="letter-h" class="keyboard-letter">H</div>
+        <div id="letter-j" class="keyboard-letter">J</div>
+        <div id="letter-k" class="keyboard-letter">K</div>
+        <div id="letter-l" class="keyboard-letter">L</div>
+    </div>
+    <div class="keyboard-row">
+        <div id="letter-enter" class="keyboard-letter keyboard-wide-letter">ENTER</div>
+        <div id="letter-z" class="keyboard-letter">Z</div>
+        <div id="letter-x" class="keyboard-letter">X</div>
+        <div id="letter-c" class="keyboard-letter">C</div>
+        <div id="letter-v" class="keyboard-letter">V</div>
+        <div id="letter-b" class="keyboard-letter">B</div>
+        <div id="letter-n" class="keyboard-letter">N</div>
+        <div id="letter-m" class="keyboard-letter">M</div>
+        <div id="letter-back" class="keyboard-letter keyboard-wide-letter">BACK</div>
+    </div>
+</div>
+
+<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.5); z-index: 10; display: none" id="toast-backdrop"></div>
+<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 11">
+    <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-white text-black rounded-top">
+            <div style="float: right"><button type="button" class="btn-close btn-close-black" data-bs-dismiss="toast" aria-label="Close" onclick="document.getElementById('toast').style.display = 'none'"></button></div>
+        </div>
+        <div class="toast-body bg-white text-black display-1 text-center rounded-bottom">
+            Toast message goes here.
+        </div>
+    </div>
+</div>
+
+<script>
+    window.wordLength = "{{ word_length }}";
+    window.previousGuesses = `{{ previous_guesses }}`;
+    window.colors = `{{ colors }}`;
+    window.already_finished = `{{ already_finished }}`;
+</script>
+<script src="{% static 'script.js' %}"></script>
+</body>
