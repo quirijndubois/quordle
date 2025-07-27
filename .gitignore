@@ -1,5 +1,5 @@
 *.pyc
 *.pyo
-__pycache__/
+**/__pycache__
 db.sqlite3
 app/migrations
